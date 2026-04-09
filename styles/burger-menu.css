@@ -1,0 +1,95 @@
+.dev-menu {
+  position: fixed;
+  top: calc(0.75rem + env(safe-area-inset-top));
+  right: calc(0.75rem + env(safe-area-inset-right));
+  z-index: 1200;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+.dev-menu.is-hidden {
+  display: none;
+}
+
+.dev-menu__toggle {
+  width: 2.8rem;
+  height: 2.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(10, 10, 10, 0.72);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.dev-menu__toggle:hover {
+  background: rgba(20, 20, 20, 0.84);
+}
+
+.dev-menu__icon {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.dev-menu__icon span {
+  display: block;
+  width: 1.15rem;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+.dev-menu__panel {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  width: min(19rem, calc(100vw - 1.5rem));
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: rgba(18, 18, 18, 0.95);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.42);
+}
+
+.dev-menu__panel[hidden] {
+  display: none;
+}
+
+.dev-menu__title {
+  margin: 0 0 0.55rem;
+  font-size: 0.9rem;
+  opacity: 0.88;
+}
+
+.dev-menu__actions {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.dev-menu__action {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.dev-menu__action:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dev-menu__action--secondary {
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.82rem;
+  opacity: 0.95;
+}
+

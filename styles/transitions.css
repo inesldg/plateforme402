@@ -1,0 +1,27 @@
+/* Variantes de fond pour les transitions inter-jeux */
+
+.intro-screen--transition {
+  z-index: 1001;
+  --intro-bg-image: url("../images/transitions/cathedrale.png");
+  --intro-scrim: rgba(0, 0, 0, 0.08);
+  background-color: #243040;
+  background-position: center bottom;
+}
+
+.intro-screen--transition-j2j3 {
+  --intro-bg-image: url("../images/transitions/coin_rue.png");
+  background-color: #2a3342;
+  background-position: center bottom;
+}
+
+.intro-screen--transition-j3j4 {
+  --intro-bg-image: url("../images/transitions/lampadaire.png");
+  background-color: #2f3a47;
+  background-position: center bottom;
+}
+
+.intro-screen--transition-j4j5 {
+  --intro-bg-image: url("../images/transitions/taverne.png");
+  background-color: #313947;
+  background-position: center bottom;
+}

@@ -1,0 +1,16 @@
+@import url("./intro.css");
+@import url("./transitions.css");
+@import url("./finale.css");
+@import url("./main-app.css");
+@import url("./burger-menu.css");
+@import url("./navigation-map.css");
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}

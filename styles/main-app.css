@@ -1,0 +1,111 @@
+/* Zone principale hors cinématiques */
+
+body.intro-active #main-app,
+body.vn-transition-active #main-app {
+  visibility: hidden;
+}
+
+#main-app {
+  min-height: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+  box-sizing: border-box;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  background: #0f1419;
+  color: #e8e6e1;
+}
+
+/* Plus d’écran d’accueil dans .main-inner : évite une zone vide sous les cinématiques */
+.main-inner:empty,
+.main-inner {
+  display: none;
+}
+
+body.game-host-active #main-app {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 0;
+  overflow: hidden;
+}
+
+.main-inner {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.main-inner h1 {
+  font-size: clamp(1.25rem, 5vw, 1.5rem);
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+}
+
+.main-inner p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  color: rgba(232, 230, 225, 0.85);
+}
+
+.main-inner__btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: #e8e6e1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.main-inner__btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.main-inner.is-game3-hidden {
+  display: none;
+}
+
+.game-3-root {
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.game-3-root.is-active {
+  display: block;
+}
+
+.game-3-frame {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  border: 0;
+  display: block;
+  background: #111;
+}
+
+.game-placeholder {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-content: center;
+  gap: 0.8rem;
+  text-align: center;
+  padding: 1.2rem;
+  box-sizing: border-box;
+  color: #e8e6e1;
+}
+
+.game-placeholder__title {
+  margin: 0;
+}
+
+.game-placeholder__text {
+  margin: 0;
+  color: rgba(232, 230, 225, 0.86);
+}

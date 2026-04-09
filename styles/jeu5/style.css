@@ -1,0 +1,583 @@
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&family=Jersey+10&family=Jersey+20&display=swap');
+
+
+    :root {
+        --bg: #0f0800;
+        --rouge: #cc1100;
+        --vert: #44dd44;
+        --rose: rgb(249, 108, 214);
+        --texte: #ffcc66;
+        --texte2: #886633;
+        --brun-sombre: #4a2c11;
+        --brun-moyen: #664400;
+        --rose-vif: #ff4466;
+        --rose-sombre: #660022;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        /* evite les bugs de taille */
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: var(--bg);
+        font-family: 'Inter';
+        color: var(--texte);
+        width: 100vw;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        /* empeche scroll */
+        overflow: hidden;
+        /* empeche la selection texte */
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+
+    /* ===================== ÉCRAN ACCUEIL ===================== */
+    #screenStart {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100dvh;
+        padding: 24px;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    /* Met le contenu au-dessus du fond (::before) */
+    #screenStart h1,
+    #screenStart .TexteIntro,
+    #screenStart .texteintro2,
+    #screenStart .pixelBtn,
+    #screenStart #micPermBlock {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* image décorative cuisinier */
+    .imgCuisinier {
+        z-index: 3;
+        position: fixed;
+        top: 65px;
+        right: -85px;
+        transform: rotate(-35deg);
+    }
+
+    img {
+        width: 200px;
+        height: auto;
+    }
+
+    /* BULLES DE TEXTE */
+    .TexteIntro::after,
+    .texteintro2::after {
+        content: "";
+        position: absolute;
+        right: -24px;
+        top: 18px;
+        width: 0;
+        height: 0;
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        border-left: 24px solid var(--brun-sombre);
+    }
+
+    /* style général bulle */
+    .TexteIntro,
+    .texteintro2 {
+        position: relative;
+        background: #fab4dcf2;
+        padding: 18px 24px;
+        border: 3px solid var(--brun-sombre);
+        border-radius: 20px;
+        color: var(--brun-sombre);
+        font-weight: bold;
+        line-height: 1.4;
+        letter-spacing: 1px;
+        box-shadow: -6px 6px 0px rgba(0, 0, 0, 0.15);
+        max-width: 80%;
+        margin: 10px auto;
+    }
+
+    .texteintro2 {
+        color: var(--brun-moyen);
+        font-size: 16px;
+    }
+
+    #screenStart::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        /* prend toute la surface */
+        background-image: url('../../images/jeu5/cuisinepixel.png');
+        background-size: cover;
+        /* pour couvrir tout l'écran */
+        background-position: center;
+
+        /* couche sombre au dessus */
+        background-color: rgba(78, 77, 77, 0.5);
+        /* met la couleur au dessus de l'image */
+        background-blend-mode: lighten;
+        /* filter: blur(2px); avoir un petit effet flou */
+        z-index: 0;
+    }
+
+    #screenGame {
+        display: none;
+        /* caché au départ, affiché en JS */
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100dvh;
+        /* hauteur écran mobile */
+        padding: 8px 10px;
+        gap: 7px;
+        background-image: url('../../images/jeu5/cuisinepixel3.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* Fond coloré pour brûlée */
+    .bruleeFond {
+        background-color: #ffcccc;
+        background-image: url('../../images/jeu5/auFeu.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* Fond coloré pour brûlée */
+    .parfaitFond {
+        background-color: #ffcccc;
+        background-image: url('../../images/jeu5/cuisinepixel.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* ===================== BLOC PERMISSION MICRO ===================== */
+    #micPermBlock {
+        display: flex;
+        flex-direction: column;
+        margin-top: 20px;
+        align-items: center;
+        gap: 12px;
+        background: rgba(27, 1, 12, 0.88);
+        border: 3px solid var(--rose-vif);
+        border-radius: 8px;
+        padding: 18px 24px;
+        min-width: 90%;
+        max-width: 90%;
+        box-shadow: 0 0 20px rgba(255, 68, 102, 0.35), 4px 4px 0px #3a1a00;
+    }
+
+    /* texte explicatif */
+    #micPermBlock .mic-txt {
+        font-size: 16px;
+        color: #faf2b4f2;
+        text-align: center;
+        line-height: 1.4;
+    }
+
+    /* satut micro */
+    #micPermBlock .mic-status {
+        font-size: 13px;
+        color: #aaa;
+        text-align: center;
+        line-height: 1.6;
+        min-height: 28px;
+    }
+
+    #micPermBlock .mic-status.ok {
+        color: var(--vert);
+    }
+
+    #micPermBlock .mic-status.err {
+        color: var(--rouge);
+    }
+
+    /* BARRE NIVEAU MICRO */
+    #micLevelWrap {
+        width: 100%;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    #micLevelWrap .lev-lbl {
+        font-size: 13px;
+        color: var(--texte2);
+    }
+
+    #micLevelBg {
+        width: 100%;
+        height: 12px;
+        background: #1a0800;
+        border: 2px solid #5c2a00;
+        overflow: hidden;
+    }
+
+    #micLevelFill {
+        height: 100%;
+        width: 0%;
+        background: var(--vert);
+        transition: width 0.05s;
+    }
+
+    /* =====================================================
+   BOUTON PIXEL
+===================================================== */
+    .pixelBtn {
+        background-color: #e16077;
+        /* couleur principale */
+        color: #ffffff;
+        /* texte blanc */
+        padding: 18px 35px;
+        /* taille du bouton */
+        font-size: 18px;
+        margin-top: 20px;
+        border: none;
+
+        /* effet relief pixel (ombre interne) */
+        box-shadow:
+            inset 4px 4px 0px #f195ab,
+            inset -4px -4px 0px #962141;
+
+        transition: transform 0.1s, box-shadow 0.1s;
+        /* animation clic */
+        cursor: pointer;
+        font-family: 'Press Start 2P', monospace;
+        /* style rétro */
+    }
+
+    /* bouton desactivé */
+    .pixelBtn:disabled {
+        background-color: transparent;
+        color: transparent;
+        box-shadow: none;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    /* effet clic */
+    .pixelBtn:not(:disabled):active {
+        transform: scale(0.95) translate(2px, 2px);
+        /* ombre réduite pour simuler le clic */
+        box-shadow: inset 2px 2px 0px #f195ab,
+            inset -2px -2px 0px #880000,
+            2px 2px 0px var(--brun-sombre);
+    }
+
+    /* bouton spécifique micro */
+    #btnMicPerm {
+        background-color: #e16077;
+        padding: 14px 24px;
+        font-size: 13px;
+        box-shadow: inset 3px 3px 0px #e077aa,
+            inset -3px -3px 0px #7a1133;
+    }
+
+    #btnMicPerm:not(:disabled):active {
+        transform: scale(0.95) translate(2px, 2px);
+    }
+
+    /* ===================== ÉCRAN JEU ===================== */
+    /* HUD HAUT — seulement FOUR et TEMPS */
+    #hudTop {
+        display: flex;
+        width: 100%;
+        max-width: 380px;
+        gap: 8px;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+
+    /* carte info */
+    .hudCard {
+        flex: 1;
+        background: #fffcf5;
+        border: 3px solid #4a2c11;
+        /* effet carte flottante */
+        box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+        border-radius: 4px;
+        padding: 8px 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* texte */
+    .hudCard .lbl {
+        font-size: 10px;
+        color: #8b5a2b;
+        text-transform: uppercase;
+    }
+
+    /* valeur */
+    .hudCard .val {
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.2;
+    }
+
+    #valTemp {
+        color: #d12244;
+    }
+
+    #valTimer {
+        color: var(--rose-vif);
+    }
+
+    /* clignotement timer */
+    @keyframes clignote {
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.1;
+        }
+    }
+
+    .clignote {
+        animation: clignote 0.6s steps(1) infinite;
+        color: var(--rose-sombre) !important;
+    }
+
+
+    /* CANVAS zone de jeu*/
+    #cv {
+        margin-top: 300px;
+        margin-left: 10px;
+        width: 70%;
+        max-height: 320px;
+        flex: 1;
+        min-height: 0;
+        display: block;
+        /* desactiver le scroll */
+        touch-action: none;
+        /* pour accentuer rendu pixel art */
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+    }
+
+    /* JAUGE MICRO EN JEU */
+    #micInGame {
+        width: 100%;
+        max-width: 380px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(15, 8, 0, 0.80);
+        border: 2px solid #5c2a00;
+        padding: 6px 10px;
+    }
+
+    #micInGame .mic-lbl {
+        font-size: 7px;
+        color: var(--texte2);
+        /* evite qu'il se compresse */
+        flex-shrink: 0;
+    }
+
+    /* fond barre */
+    #micInGameBg {
+        flex: 1;
+        height: 10px;
+        background: #1a0800;
+        border: 1px solid #3a1800;
+        overflow: hidden;
+    }
+
+    #micInGameFill {
+        height: 100%;
+        width: 0%;
+        background: var(--vert);
+        transition: width 0.05s;
+    }
+
+    #micInGameVal {
+        font-size: 7px;
+        color: var(--texte);
+        width: 32px;
+        text-align: right;
+    }
+
+    /* MESSAGE DYNAMIQUE */
+    .texteintro3 {
+        position: absolute;
+        /* pas fixed, pour rester dans le flux*/
+        background: #fab4dcf2;
+        border: 3px solid var(--brun-sombre);
+        border-radius: 20px;
+        color: var(--brun-sombre);
+        font-weight: bold;
+        line-height: 1.4;
+        letter-spacing: 1px;
+        box-shadow: -6px 6px 0px rgba(0, 0, 0, 0.15);
+        max-width: 80%;
+        margin: 100px auto 30px auto;
+        /* haut et bas pour espacer du reste */
+        padding: 20px;
+        /* espace interne autour du texte */
+        text-align: center;
+    }
+
+    #msgBox {
+        font-size: 16px;
+        color: #4d012a;
+        line-height: 1.6;
+        padding: 0;
+        text-align: center;
+    }
+
+    /* SOS OVERLAY */
+    #sosOverlay {
+        position: fixed;
+        /* prend tout l'écran */
+        inset: 0;
+        pointer-events: none;
+        /* pour etre au-dessus de tout */
+        z-index: 99;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.15s;
+    }
+
+    #sosOverlay.show {
+        opacity: 1;
+        background: rgba(255, 0, 0, 0.05);
+    }
+
+    /* animation pulsation */
+    @keyframes sosPulse {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.08);
+            opacity: 0.6;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    #sosTxt {
+        font-size: 52px;
+        color: var(--rose-vif);
+        letter-spacing: 10px;
+        text-shadow: 4px 4px 0px #000,
+            0 0 30px #ff0000;
+        /* animation rapide */
+        animation: sosPulse 0.35s steps(2) infinite;
+    }
+
+    /* ÉCRAN FIN */
+    #screenEnd {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100dvh;
+        gap: 20px;
+        padding: 24px;
+        text-align: center;
+    }
+
+    /* bloc texte */
+    #endTitle {
+        font-size: 18px;
+        line-height: 1.2;
+        max-width: 280px;
+        /* permet les retours à la ligne avec \n */
+        white-space: pre-line;
+
+        position: relative;
+        /* cohérent avec le reste du jeu */
+        background: #fab4dcf2;
+        padding: 18px 24px;
+        border: 3px solid var(--brun-sombre);
+        border-radius: 20px;
+        color: var(--brun-sombre);
+        font-weight: bold;
+        line-height: 1.4;
+        letter-spacing: 1px;
+        box-shadow: -6px 6px 0px rgba(0, 0, 0, 0.15);
+        max-width: 80%;
+        margin: 10px auto;
+    }
+
+    #endSub {
+        font-size: 22px;
+        /* améliorer lisibilité */
+        max-width: 280px;
+        white-space: pre-line;
+
+        position: relative;
+        background: #fab4dcf2;
+        padding: 18px 24px;
+        border: 3px solid var(--brun-sombre);
+        border-radius: 20px;
+        color: var(--brun-sombre);
+        font-weight: bold;
+        line-height: 1.4;
+        letter-spacing: 1px;
+        /* effet profondeur */
+        box-shadow: -6px 6px 0px rgba(0, 0, 0, 0.15);
+        max-width: 80%;
+        margin: 10px auto;
+    }
+
+    /* bouton rejouer caché par défault */
+    #btnRejouer {
+        display: none;
+        /* caché au départ */
+    }
+
+    /* =====================================================
+   🎉 CONFETTIS ANIMATION
+===================================================== */
+    .confetti {
+        position: fixed;
+        top: -10px;
+
+        border-radius: 2px;
+
+        z-index: 100;
+        /* au-dessus de tout */
+
+        animation: chuteConfetti linear forwards;
+    }
+
+    /* chute + rotation */
+    @keyframes chuteConfetti {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }

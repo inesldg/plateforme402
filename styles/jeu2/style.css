@@ -1,0 +1,76 @@
+/* Jeu 2 — plateformes */
+body {
+  margin: 0;
+  overflow: hidden;
+  background-color: #333;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+canvas {
+  position: absolute;
+}
+
+#collisionZone {
+  visibility: hidden;
+  z-index: 1;
+}
+
+#playZone {
+  z-index: 2;
+}
+
+#playerZone {
+  z-index: 3;
+}
+
+.invisible {
+  display: none;
+}
+
+h2 {
+  text-align: center;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+
+#menu,
+#loseGame,
+#winGame {
+  margin: 24px;
+}
+
+.button {
+  padding: 12px;
+  border-radius: 6px;
+  background-color: yellow;
+  color: black;
+  width: fit-content;
+  margin: auto;
+  margin-top: 24px;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.instructions {
+  margin: 12px;
+  border: 2px solid #eee;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.instructions > div {
+  margin: 8px;
+}
+
+.instructions > div:last-child {
+  text-align: center;
+  font-size: 20px;
+  margin-top: 12px;
+}

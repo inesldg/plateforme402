@@ -1,0 +1,10 @@
+{
+  "name": "Plateforme 402",
+  "short_name": "402",
+  "theme_color": "#1a2332",
+  "background_color": "#0f1419",
+  "description": "Parcours et jeux — Mulhouse",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/?utm_source=launcher"
+}

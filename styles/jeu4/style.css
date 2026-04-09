@@ -1,0 +1,137 @@
+/* Reset de base: supprime marges/paddings et bloque le scroll pour un jeu plein ecran */
+body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	height: 100%;
+}
+
+/* Conteneur principal qui prend toute la largeur/hauteur de la fenetre */
+main {
+	width: 100vw;
+	height: 100dvh;
+}
+
+/* Zone de superposition des canvas (fond, timer, gameplay) */
+.pile-canvas {
+	position: relative;
+	width: 100vw;
+	height: 100dvh;
+}
+
+/* Canvas du fond */
+#canva-fond {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100vw;
+	height: 100dvh;
+}
+
+/* Canvas du minuteur */
+#canva-minuteur {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100vw;
+	height: 100dvh;
+	background: transparent;
+	pointer-events: none;
+}
+
+/* Canvas des pommes */
+#canva-pommes {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100vw;
+	height: 100dvh;
+	background: transparent;
+	pointer-events: auto;
+}
+
+/* Overlay de fin de partie qui couvre tout l'ecran */
+.surcouche-jeu {
+	position: absolute;
+	inset: 0;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 10;
+	pointer-events: auto;
+}
+
+/* Etat visible de l'overlay. */
+.surcouche-jeu.est-visible {
+	display: flex;
+}
+
+/* Carte centrale qui contient le message et le bouton de relance */
+.carte-surcouche-jeu {
+	background: rgba(255, 255, 255, 0.95);
+	padding: 22px 20px;
+	border-radius: 14px;
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+	text-align: center;
+	min-width: 220px;
+}
+
+/* Titre de fin de partie dans la carte overlay. */
+.carte-surcouche-jeu h1 {
+	margin: 0 0 14px;
+	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+	font-size: clamp(26px, 7vw, 38px);
+	letter-spacing: 1px;
+	color: #b50000;
+}
+
+/* Variante de couleur pour le titre de la carte de victoire. */
+.carte-surcouche-jeu-victoire h1 {
+	color: #1f8f2f;
+}
+
+/* Texte de score affiche dans les overlays de fin de partie/victoire. */
+.message-surcouche {
+	margin: 0 0 14px;
+	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+	font-size: clamp(16px, 3.8vw, 22px);
+	font-weight: 700;
+	color: #232323;
+}
+
+/* Liste des regles dans l'overlay de demarrage. */
+.liste-regles {
+	margin: 0 0 14px;
+	padding-left: 24px;
+	text-align: left;
+	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+	font-size: clamp(15px, 3.2vw, 20px);
+	line-height: 1.35;
+	color: #232323;
+}
+
+/* Espacement entre les points de la liste des regles. */
+.liste-regles li {
+	margin-bottom: 6px;
+}
+
+/* Bouton de redemarrage du jeu. */
+#bouton-recommencer,
+#bouton-continuer,
+#bouton-demarrer {
+	border: none;
+	border-radius: 10px;
+	padding: 10px 16px;
+	font-size: 16px;
+	font-weight: 700;
+	cursor: pointer;
+	background: #1f8f2f;
+	color: #ffffff;
+}
+
+/* Masque le deuxieme span de cet en-tete specifique. */
+.masteriyo-single-body__main--curriculum-content-bottom__accordion--header-misc > span:nth-of-type(2) {
+	display: none;
+}
+

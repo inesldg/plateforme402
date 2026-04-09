@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1a2332">
+  <title>SAE402</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <!-- Ici on fait un preload de quelques images importantes -->
+  <link rel="preload" as="image" href="images/transitions/guillaume2.png">
+  <link rel="preload" as="image" href="images/transitions/guillaume3.png">
+  <link rel="preload" as="image" href="images/transitions/gessler.png">
+</head>
+
+<body>
+  <main id="main-app">
+    <!-- Section requise par game-flow (jeux en iframe) ; contenu d’accueil retiré -->
+    <section class="main-inner" aria-hidden="true"></section>
+  </main>
+
+  <!-- Menu burger pour passer les jeux rapidement -->
+  <nav id="dev-menu" class="dev-menu">
+    <button type="button" id="dev-menu-toggle" class="dev-menu__toggle" title="Menu">
+      <span class="dev-menu__icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+    <!-- Contenu du menu burger pour passer les jeux rapidement -->
+    <div id="dev-menu-panel" class="dev-menu__panel" hidden>
+      <p class="dev-menu__title">Quick access to the games</p>
+      <div class="dev-menu__actions">
+        <button type="button" class="dev-menu__action" data-action="game" data-game="1">Go directly to game 1</button>
+        <button type="button" class="dev-menu__action" data-action="game" data-game="2">Go directly to game 2</button>
+        <button type="button" class="dev-menu__action" data-action="game" data-game="3">Go directly to game 3</button>
+        <button type="button" class="dev-menu__action" data-action="game" data-game="4">Go directly to game 4</button>
+        <button type="button" class="dev-menu__action" data-action="game" data-game="5">Go directly to game 5</button>
+        <button type="button" class="dev-menu__action dev-menu__action--secondary" data-action="finale">Watch the end cinematic</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Introduction avec Guillaume -->
+  <section id="intro-screen" class="intro-screen">
+    <div class="intro-stage">
+      <div class="intro-sprite-wrap">
+        <img id="intro-sprite-img" class="intro-sprite" src="images/transitions/guillaume2.png" alt="" width="280"
+          height="320" decoding="async">
+      </div>
+
+      <div id="intro-dialogue" class="intro-dialogue">
+        <div class="intro-dialogue-inner">
+          <div id="intro-name" class="intro-name">William Tell</div>
+          <p id="intro-line" class="intro-lines"></p>
+          <p id="intro-hint" class="intro-hint"></p>
+          <div class="intro-actions">
+            <button type="button" id="intro-primary" class="intro-btn" hidden>
+              Start
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dialogue entre jeu 1 et jeu 2 (affiché via plateforme402.showTransitionJ1J2()) -->
+  <section id="trans-j1j2-screen" class="intro-screen intro-screen--transition is-hidden">
+    <div class="intro-stage">
+      <div class="intro-sprite-wrap">
+        <img id="trans-j1j2-sprite-img" class="intro-sprite" src="images/transitions/guillaume2.png" alt="" width="280"
+          height="320" decoding="async">
+      </div>
+      <div id="trans-j1j2-dialogue" class="intro-dialogue">
+        <div class="intro-dialogue-inner">
+          <div id="trans-j1j2-name" class="intro-name">William Tell</div>
+          <p id="trans-j1j2-line" class="intro-lines"></p>
+          <p id="trans-j1j2-hint" class="intro-hint"></p>
+          <div class="intro-actions">
+            <button type="button" id="trans-j1j2-primary" class="intro-btn" hidden>
+              Continue to game 2
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dialogue entre jeu 2 et jeu 3 (affiché via plateforme402.showTransitionJ2J3()) -->
+  <section id="trans-j2j3-screen" class="intro-screen intro-screen--transition intro-screen--transition-j2j3 is-hidden">
+    <div class="intro-stage">
+      <div class="intro-sprite-wrap">
+        <img id="trans-j2j3-sprite-img" class="intro-sprite" src="images/transitions/guillaume3.png" alt="" width="280"
+          height="320" decoding="async">
+      </div>
+      <div id="trans-j2j3-dialogue" class="intro-dialogue">
+        <div class="intro-dialogue-inner">
+          <div id="trans-j2j3-name" class="intro-name">William Tell</div>
+          <p id="trans-j2j3-line" class="intro-lines"></p>
+          <p id="trans-j2j3-hint" class="intro-hint"></p>
+          <div class="intro-actions">
+            <button type="button" id="trans-j2j3-primary" class="intro-btn" hidden>
+              Continue to game 3
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dialogue entre jeu 3 et jeu 4 (affiché via plateforme402.showTransitionJ3J4()) -->
+  <section id="trans-j3j4-screen" class="intro-screen intro-screen--transition intro-screen--transition-j3j4 is-hidden">
+    <div class="intro-stage">
+      <div class="intro-sprite-wrap">
+        <img id="trans-j3j4-sprite-img" class="intro-sprite" src="images/transitions/guillaume2.png" alt="" width="280"
+          height="320" decoding="async">
+      </div>
+      <div id="trans-j3j4-dialogue" class="intro-dialogue">
+        <div class="intro-dialogue-inner">
+          <div id="trans-j3j4-name" class="intro-name">William Tell</div>
+          <p id="trans-j3j4-line" class="intro-lines"></p>
+          <p id="trans-j3j4-hint" class="intro-hint"></p>
+          <div class="intro-actions">
+            <button type="button" id="trans-j3j4-primary" class="intro-btn" hidden>
+              Continue to game 4
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dialogue entre jeu 4 et jeu 5 (affiché via plateforme402.showTransitionJ4J5()) -->
+  <section id="trans-j4j5-screen" class="intro-screen intro-screen--transition intro-screen--transition-j4j5 is-hidden">
+    <div class="intro-stage">
+      <div class="intro-sprite-wrap">
+        <img id="trans-j4j5-sprite-img" class="intro-sprite" src="images/transitions/guillaume2.png" alt="" width="280"
+          height="320" decoding="async">
+      </div>
+      <div id="trans-j4j5-dialogue" class="intro-dialogue">
+        <div class="intro-dialogue-inner">
+          <div id="trans-j4j5-name" class="intro-name">William Tell</div>
+          <p id="trans-j4j5-line" class="intro-lines"></p>
+          <p id="trans-j4j5-hint" class="intro-hint"></p>
+          <div class="intro-actions">
+            <button type="button" id="trans-j4j5-primary" class="intro-btn" hidden>
+              Continue to game 5
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cinématique de fin (affiché via plateforme402.showFinale()) -->
+  <section id="finale-screen" class="intro-screen intro-screen--transition finale-screen is-hidden">
+    <div id="finale-fade" class="finale-fade"></div>
+    <div class="intro-stage">
+      <div class="intro-sprite-wrap">
+        <img id="finale-sprite-img" class="intro-sprite" src="images/transitions/guillaume3.png" alt="" width="280"
+          height="320" decoding="async">
+      </div>
+      <div id="finale-dialogue" class="intro-dialogue">
+        <div class="intro-dialogue-inner">
+          <div id="finale-name" class="intro-name">William Tell</div>
+          <p id="finale-line" class="intro-lines"></p>
+          <p id="finale-hint" class="intro-hint"></p>
+          <div class="intro-actions">
+            <button type="button" id="finale-primary" class="intro-btn" hidden>
+              End the adventure
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bordure au dessus de la map avec le titre etc -->
+  <section id="nav-map-screen" class="nav-map-screen is-hidden">
+    <div class="nav-map-panel">
+      <h2 id="nav-map-title" class="nav-map-title">Head to the next game</h2>
+      <p id="nav-map-subtitle" class="nav-map-subtitle"></p>
+      <p id="nav-map-distance" class="nav-map-distance"></p>
+    </div>
+    <div id="nav-map" class="nav-map"></div>
+  </section>
+
+  <!-- Chargement des scripts pour les transitions, intro/conclusion, et le menu burger -->
+  <script src="js/intro.js"></script>
+  <script src="js/transition-j1-j2.js"></script>
+  <script src="js/transition-j2-j3.js"></script>
+  <script src="js/transition-j3-j4.js"></script>
+  <script src="js/transition-j4-j5.js"></script>
+  <script src="js/finale.js"></script>
+  <script src="js/burger-menu.js"></script>
+
+  <!-- charge la map leaflet-->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script src="js/navigation-map.js"></script>
+  <script src="js/game-flow.js"></script>
+
+  <!-- affiche les transitions entre les jeux-->
+  <script>
+    const bindDevAction = function (id, callback) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("click", callback);
+    };
+
+    bindDevAction("dev-test-trans-j1j2", function () {
+      if (window.plateforme402 && window.plateforme402.showTransitionJ1J2) {
+        window.plateforme402.showTransitionJ1J2();
+      }
+    });
+    bindDevAction("dev-test-trans-j2j3", function () {
+      if (window.plateforme402 && window.plateforme402.showTransitionJ2J3) {
+        window.plateforme402.showTransitionJ2J3();
+      }
+    });
+    bindDevAction("dev-test-trans-j3j4", function () {
+      if (window.plateforme402 && window.plateforme402.showTransitionJ3J4) {
+        window.plateforme402.showTransitionJ3J4();
+      }
+    });
+    bindDevAction("dev-test-trans-j4j5", function () {
+      if (window.plateforme402 && window.plateforme402.showTransitionJ4J5) {
+        window.plateforme402.showTransitionJ4J5();
+      }
+    });
+    bindDevAction("dev-test-finale", function () {
+      if (window.plateforme402 && window.plateforme402.showFinale) {
+        window.plateforme402.showFinale();
+      }
+    });
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function () { });
+    }
+  </script>
+</body>
+
+</html>

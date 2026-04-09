@@ -1,0 +1,54 @@
+/* Variantes spécifiques à la cinématique de fin */
+
+.finale-screen {
+  --intro-bg-image: url("../images/transitions/boulangerie.png");
+  background-color: #1e2430;
+  background-position: center bottom;
+}
+
+.finale-screen--delivery {
+  --intro-bg-image: url("../images/transitions/boulangerie.png");
+  background-color: #202634;
+  background-position: center bottom;
+}
+
+.finale-screen--gessler-joy .intro-sprite-wrap,
+.finale-screen--guillaume-joy .intro-sprite-wrap {
+  left: 0;
+  right: 0;
+  justify-content: center;
+  padding-left: 0;
+}
+
+.finale-screen--gessler-joy .intro-sprite {
+  width: min(100vw, 1200px);
+  max-width: 100vw;
+  max-height: min(92vh, 760px);
+  object-position: center bottom;
+}
+
+.finale-screen--guillaume-joy .intro-sprite {
+  width: min(88vw, 980px);
+  max-width: 88vw;
+  max-height: min(82vh, 640px);
+  object-position: center bottom;
+}
+
+.finale-screen--guillaume-tarte .intro-sprite {
+  max-width: min(94vw, 420px);
+  max-height: min(88vh, 660px);
+}
+
+.finale-fade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.42s ease;
+}
+
+.finale-fade.is-active {
+  opacity: 1;
+}
