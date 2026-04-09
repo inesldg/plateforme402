@@ -1,0 +1,595 @@
+// Racine du site : dérivée de ce fichier (…/js/jeu1/script.js → …/) pour que images/audio
+// fonctionnent dans l’iframe même avec un sous-dossier (ex. GitHub Pages) ou chemins relatifs ambigus.
+const JEU1_ROOT = (function () {
+    var s = document.currentScript;
+    if (s && s.src) {
+        return s.src.replace(/\/js\/jeu1\/script\.js(\?.*)?$/i, "");
+    }
+    try {
+        return new URL("../../", window.location.href).href.replace(/\/?$/, "");
+    } catch (e) {
+        return "";
+    }
+})();
+
+function jeu1Url(chemin) {
+    return JEU1_ROOT.replace(/\/$/, "") + "/" + String(chemin).replace(/^\//, "");
+}
+
+// Initialisations
+const c = document.querySelector("#Canva-jeu")
+const ctx = c.getContext('2d');
+
+// Etat du jeu (menu, en cours, gagné, perdu)
+let gameState = "menu";
+
+// Récupération des éléments HTML (menus, boutons, overlay)
+const overlay = document.getElementById("overlay");
+const menu = document.getElementById("menu");
+const endScreen = document.getElementById("endScreen");
+const endMessage = document.getElementById("endMessage");
+const startBtn = document.getElementById("startBtn");
+const restartBtn = document.getElementById("restartBtn");
+const continueBtn = document.getElementById("continueBtn");
+
+// Musique
+const bgMusic = new Audio(jeu1Url("audio/jeu1/musique.mp3"));
+bgMusic.loop = true; // La musique recommence à la fin
+bgMusic.volume = 0.2; // Volume à 20%
+
+// Détection si l'utilisateur est sur mobile
+const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+// BOUTONS MENU
+// Bouton "Jouer"
+startBtn.addEventListener("click", () => {
+    menu.style.display = "none";
+    overlay.style.display = "none";
+
+    // --- AJOUT MUSIQUE ---
+    bgMusic.play();
+
+    if (isMobile) joystick.style.display = "block"; // Affiche joystick mobile
+    gameState = "playing";
+    init(); // Lance une nouvelle partie
+});
+
+// Bouton "Continuer" → retour plateforme (iframe)
+continueBtn.addEventListener("click", () => {
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage(
+            { source: "plateforme402-game1", type: "plateforme402:game-end" },
+            "*"
+        );
+    }
+});
+
+// Bouton "Rejouer"
+restartBtn.addEventListener("click", () => {
+    endScreen.style.display = "none";
+    overlay.style.display = "none";
+
+    // --- RELANCER LA MUSIQUE ---
+    bgMusic.play().catch(error => console.log(error));
+
+    if (isMobile) joystick.style.display = "block";
+    gameState = "playing";
+    init();
+});
+
+// VARIABLES GLOBALES
+let lastTime = 0;
+let colonne = 17;
+let ligne = 25;
+
+let grid = []
+let taille;
+let rayonVision = 70;
+
+
+// SPRITE JOUEUR
+const playerImg = new Image();
+playerImg.src = jeu1Url("images/jeu1/perso.png");
+
+let SPRITE_W, SPRITE_H;
+
+// Découpe du sprite en 4x4 animations
+playerImg.onload = () => {
+    SPRITE_W = playerImg.width / 4;
+    SPRITE_H = playerImg.height / 4;
+};
+
+
+// SPRITE ENNEMI
+const enemyImg = new Image();
+enemyImg.src = jeu1Url("images/jeu1/mechant.png");
+
+let E_SPRITE_W, E_SPRITE_H;
+
+// Taille fixe pour ennemi
+enemyImg.onload = () => {
+    E_SPRITE_W = 60;
+    E_SPRITE_H = 60;
+};
+
+
+// DECOR
+const decorImg = new Image();
+decorImg.src = jeu1Url("images/jeu1/decor.jpg");
+
+const hatImg = new Image();
+hatImg.src = jeu1Url("images/jeu1/chapeau.png");
+
+// Position de la texture herbe dans l'image
+const SOURCE_HERBE = { x: 165, y: 25 };
+
+
+// JOUEUR
+let player = {
+    x: 0,
+    y: 0,
+    dir: 0,
+    frame: 0,
+    speed: 2
+};
+
+
+// ENNEMIS
+let enemies = [];
+
+// CONTROLES CLAVIER
+let keys = {};
+window.addEventListener("keydown", e => keys[e.key] = true);
+window.addEventListener("keyup", e => keys[e.key] = false);
+
+// JOYSTICK MOBILE
+const joystick = document.getElementById("joystick");
+const stick = document.getElementById("stick");
+
+let joystickActive = false;
+let joystickX = 0;
+let joystickY = 0;
+let maxRadius = 50;
+
+// Mise à jour du joystick
+function updateJoystick(dx, dy) {
+    let dist = Math.hypot(dx, dy);
+    // Limite le mouvement dans un cercle
+    if (dist > maxRadius) {
+        dx = (dx / dist) * maxRadius;
+        dy = (dy / dist) * maxRadius;
+    }
+
+    // Déplace le stick visuellement
+    stick.style.left = `calc(50% + ${dx}px)`;
+    stick.style.top = `calc(50% + ${dy}px)`;
+
+    // Valeurs normalisées (-1 à 1)
+    joystickX = dx / maxRadius;
+    joystickY = dy / maxRadius;
+}
+
+// Gestion tactile
+joystick.addEventListener("touchstart", e => {
+    e.preventDefault();
+    joystickActive = true;
+});
+
+joystick.addEventListener("touchmove", e => {
+    if (!joystickActive) return;
+    let rect = joystick.getBoundingClientRect();
+    let touch = e.touches[0];
+    let dx = touch.clientX - (rect.left + rect.width / 2);
+    let dy = touch.clientY - (rect.top + rect.height / 2);
+    updateJoystick(dx, dy);
+});
+
+joystick.addEventListener("touchend", e => {
+    joystickActive = false;
+    updateJoystick(0, 0);
+
+    joystickX = 0;
+    joystickY = 0;
+});
+
+// GENERATION LABYRINTHE
+function generateLaby(col, lig) {
+    // Création du tableau du labyrinthe
+    let laby = [];
+
+    // Remplit tout en murs
+    for (let l = 0; l < lig; l++) {
+        laby[l] = [];
+        for (let c = 0; c < col; c++) laby[l][c] = 1;
+    }
+
+    // Fonction récursive pour creuser
+    function creuser(l, c) {
+        laby[l][c] = 0;
+
+        // Liste des directions possibles (2 cases pour éviter les chemins collés)
+        let directions = [
+            [0, 2], [0, -2], [2, 0], [-2, 0]
+        ];
+
+        // Mélanger les directions pour rendre le labyrinthe aléatoire
+        directions.sort(() => Math.random() - 0.5);
+
+        // Parcourir chaque direction
+        for (let d of directions) {
+            let nl = l + d[0];
+            let nc = c + d[1];
+
+            // Calcul de la prochaine case
+            if (nl > 0 && nl < lig - 1 && nc > 0 && nc < col - 1) {
+                // Si la case est encore un mur
+                if (laby[nl][nc] === 1) {
+                    // Casser le mur entre la case actuelle et la suivante
+                    laby[l + d[0] / 2][c + d[1] / 2] = 0;
+                    creuser(nl, nc);
+                }
+            }
+        }
+    }
+    creuser(1, 1);
+
+    // Ajoute des passages en plus
+    let chance = 0.2;
+
+    // Parcourir toutes les cases internes
+    for (let l = 1; l < lig - 1; l++) {
+        for (let c = 1; c < col - 1; c++) {
+            // Si c'est un mur
+            if (laby[l][c] === 1) {
+                let voisins = 0;
+
+                // Compter le nombre de chemins autour
+                if (laby[l + 1][c] === 0) voisins++;
+                if (laby[l - 1][c] === 0) voisins++;
+                if (laby[l][c + 1] === 0) voisins++;
+                if (laby[l][c - 1] === 0) voisins++;
+
+                // Si au moins 2 chemins autour → possibilité d'ouvrir
+                if (voisins >= 2 && Math.random() < chance) laby[l][c] = 0;
+            }
+        }
+    }
+
+    return laby;
+}
+
+let hatPos = { l: 0, c: 0 }; // Pour stocker la position du chapeau
+
+// INITIALISATION PARTIE
+function init() {
+    // Toujours la taille de la zone visible (iframe / fenêtre) pour éviter les bords coupés
+    var w = Math.max(1, Math.floor(window.innerWidth));
+    var h = Math.max(1, Math.floor(window.innerHeight));
+    c.width = w;
+    c.height = h;
+
+    // Génération labyrinthe
+    grid = generateLaby(colonne, ligne);
+    taille = Math.min(c.width / colonne, c.height / ligne);
+
+    // Position du chapeau (objectif)
+    let trouve = false;
+    for (let l = ligne - 1; l >= 0 && !trouve; l--) {
+        for (let col = colonne - 1; col >= 0 && !trouve; col--) {
+            if (grid[l][col] === 0) {
+                hatPos.l = l;
+                hatPos.c = col;
+                trouve = true;
+            }
+        }
+    }
+
+    // Spawn joueur
+    player.x = 1 * taille;
+    player.y = 1 * taille;
+
+    // Spawn ennemis sans chevauchement
+    enemies = [];
+    let available = [];
+
+    for (let l = 0; l < ligne; l++) {
+        for (let c = 0; c < colonne; c++) {
+            if (grid[l][c] === 0 && !(l === 1 && c === 1) && !(l === hatPos.l && c === hatPos.c)) {
+                available.push({ l, c });
+            }
+        }
+    }
+
+    let nbEnemies = 4;
+    for (let i = 0; i < nbEnemies; i++) {
+        let index = Math.floor(Math.random() * available.length);
+        let cell = available.splice(index, 1)[0];
+        enemies.push({
+            x: cell.c * taille,
+            y: cell.l * taille,
+            dir: 0,
+            frame: 0,
+            speed: 1,
+            moveTimer: 0
+        });
+    }
+}
+
+// COLLISION
+// Vérifie si on peut marcher
+function peutBouger(x, y) {
+    let marge = 2;
+
+    let points = [
+        [x + marge, y + marge],
+        [x + taille - marge, y + marge],
+        [x + marge, y + taille - marge],
+        [x + taille - marge, y + taille - marge]
+    ];
+
+    for (let p of points) {
+        let col = Math.floor(p[0] / taille);
+        let lig = Math.floor(p[1] / taille);
+
+        if (!grid[lig] || grid[lig][col] === 1) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// Collision rectangle (joueur / ennemi)
+function collisionRect(a, b) {
+    return (
+        a.x < b.x + taille &&
+        a.x + taille > b.x &&
+        a.y < b.y + taille &&
+        a.y + taille > b.y
+    );
+}
+
+// UPDATE
+function update(delta) {
+    if (gameState !== "playing") return; // si overlay visible : le jeu est fixe en arrière plan
+
+    let moving = false;
+
+    // coordonnées futures
+    let nx = player.x;
+    let ny = player.y;
+
+    // clavier
+    if (keys["ArrowLeft"]) { nx -= player.speed * delta; player.dir = 1; moving = true; }
+    if (keys["ArrowRight"]) { nx += player.speed * delta; player.dir = 2; moving = true; }
+    if (keys["ArrowUp"]) { ny -= player.speed * delta; player.dir = 3; moving = true; }
+    if (keys["ArrowDown"]) { ny += player.speed * delta; player.dir = 0; moving = true; }
+
+    // joystick
+    if (joystickActive || Math.abs(joystickX) > 0.1 || Math.abs(joystickY) > 0.1) {
+        nx = player.x + joystickX * player.speed * delta;
+        ny = player.y + joystickY * delta;
+
+        if (Math.abs(joystickX) > Math.abs(joystickY)) {
+            player.dir = joystickX > 0 ? 2 : 1;
+        } else {
+            player.dir = joystickY > 0 ? 0 : 3;
+        }
+
+        moving = true;
+    }
+
+    // collisions
+    if (peutBouger(nx, player.y)) player.x = nx;
+    if (peutBouger(player.x, ny)) player.y = ny;
+
+    // animation
+    if (moving) {
+        player.frame += 0.15;
+        if (player.frame >= 4) player.frame = 0;
+    } else {
+        player.frame = 0;
+    }
+
+    // collision ennemis
+    for (let e of enemies) {
+        if (collisionRect(player, e)) {
+            gameState = "lose";
+            bgMusic.pause(); // On arrête la musique
+            bgMusic.currentTime = 0; // On remet au début pour la prochaine fois
+            overlay.style.display = "flex";
+            endScreen.style.display = "block";
+            endMessage.textContent = "You lost!";
+            // GESTION BOUTONS
+            restartBtn.style.display = "inline-block"; // Montre rejouer
+            continueBtn.style.display = "none";         // Cache continuer
+            joystick.style.display = "none";
+            return;
+        }
+    }
+
+    // collision chapeau
+    let hat = { x: hatPos.c * taille, y: hatPos.l * taille };
+    if (collisionRect(player, hat)) {
+        gameState = "win";
+        bgMusic.pause(); // On arrête la musique
+        bgMusic.currentTime = 0; // On remet au début pour la prochaine fois
+        overlay.style.display = "flex";
+        endScreen.style.display = "block";
+        endMessage.textContent = "You won!";
+        // GESTION BOUTONS
+        restartBtn.style.display = "none";          // Cache rejouer
+        continueBtn.style.display = "inline-block"; // Montre continuer
+        joystick.style.display = "none";
+        return;
+    }
+}
+
+// UPDATE ENNEMIS
+function updateEnemies(delta) {
+    if (gameState !== "playing") return; // On ne bouge pas les ennemis si overlay visible
+    for (let e of enemies) {
+        // Déterminer les directions réellement possibles
+        let possibles = [];
+        if (peutBouger(e.x, e.y - e.speed * delta)) possibles.push(3);
+        if (peutBouger(e.x, e.y + e.speed * delta)) possibles.push(0);
+        if (peutBouger(e.x - e.speed * delta, e.y)) possibles.push(1);
+        if (peutBouger(e.x + e.speed * delta, e.y)) possibles.push(2);
+
+        // Détection face au mur (avec delta)
+        let nextX = e.x;
+        let nextY = e.y;
+        if (e.dir === 1) nextX -= e.speed * delta;
+        if (e.dir === 2) nextX += e.speed * delta;
+        if (e.dir === 3) nextY -= e.speed * delta;
+        if (e.dir === 0) nextY += e.speed * delta;
+        let faceAuMur = !peutBouger(nextX, nextY);
+
+        // Vérifie si sur une case
+        let surUneCase = (Math.abs(e.x % taille) < e.speed && Math.abs(e.y % taille) < e.speed);
+
+        // Changement de direction
+        if (faceAuMur || (surUneCase && possibles.length > 2)) {
+            let nouvellesOptions = possibles;
+
+            // Éviter le demi-tour
+            if (possibles.length > 1) {
+                let inverse = { 0: 3, 3: 0, 1: 2, 2: 1 }[e.dir];
+                nouvellesOptions = possibles.filter(d => d !== inverse);
+            }
+
+            if (nouvellesOptions.length > 0) {
+                e.dir = nouvellesOptions[Math.floor(Math.random() * nouvellesOptions.length)];
+
+                // Recalage magnétique
+                if (surUneCase) {
+                    e.x = Math.round(e.x / taille) * taille;
+                    e.y = Math.round(e.y / taille) * taille;
+                }
+            }
+        }
+
+        // Application du mouvement
+        if (peutBouger(nextX, nextY)) {
+            e.x = nextX;
+            e.y = nextY;
+        } else if (possibles.length > 0) {
+            // Si bloqué, change de direction immédiatement
+            e.dir = possibles[Math.floor(Math.random() * possibles.length)];
+        }
+
+        // Animation
+        e.frame += 0.1;
+        if (e.frame >= 4) e.frame = 0;
+    }
+}
+
+
+// Fonction pour afficher labyrinthe
+function afficher() {
+    ctx.clearRect(0, 0, c.width, c.height)
+
+    // Labyrinthe
+    // Dans la fonction afficher() :
+    for (let l = 0; l < ligne; l++) {
+        for (let c = 0; c < colonne; c++) {
+
+            if (grid[l][c] === 1) {
+                // Si mur : on affiche l'herbe
+                if (decorImg.complete) {
+                    ctx.drawImage(
+                        decorImg,
+                        SOURCE_HERBE.x, SOURCE_HERBE.y, 48, 48,
+                        c * taille, l * taille,
+                        taille, taille
+                    );
+                } else {
+                    ctx.fillStyle = "#000"; // Noir si l'image n'est pas chargée
+                    ctx.fillRect(c * taille, l * taille, taille, taille);
+                }
+            } else {
+                // Si chemain : on affiche le beige
+                ctx.fillStyle = "#F5F5DC";
+                ctx.fillRect(c * taille, l * taille, taille, taille);
+            }
+        }
+
+    }
+
+    // DESSIN DU CHAPEAU SUR LE CHEMIN
+    if (hatImg.complete) {
+        ctx.drawImage(
+            hatImg,
+            hatPos.c * taille,
+            hatPos.l * taille,
+            taille,
+            taille
+        );
+    }
+
+    // JOUEUR
+    if (SPRITE_W && SPRITE_H) {
+        let frameX = Math.floor(player.frame) * SPRITE_W;
+        let frameY = player.dir * SPRITE_H;
+
+        ctx.drawImage(
+            playerImg,
+            frameX, frameY, SPRITE_W, SPRITE_H,
+            player.x, player.y,
+            taille,
+            taille
+        );
+    }
+
+    // ennemis
+    for (let e of enemies) {
+        if (E_SPRITE_W) {
+            ctx.drawImage(
+                enemyImg,
+                Math.floor(e.frame) * E_SPRITE_W,
+                e.dir * E_SPRITE_H,
+                E_SPRITE_W, E_SPRITE_H,
+                e.x, e.y,
+                taille, taille
+            );
+        }
+    }
+
+    // AJOUT DU MODE NOIR
+    // On ne l'affiche que si on est en train de jouer
+    if (gameState === "playing") {
+        ctx.save();
+
+        // Calcul du centre du joueur
+        let xLumiere = player.x + taille / 2;
+        let yLumiere = player.y + taille / 2;
+
+        // On dessine le noir
+        ctx.fillStyle = "black";
+
+        // Pour percer le trou
+        ctx.beginPath();
+        ctx.rect(0, 0, c.width, c.height);
+        ctx.arc(xLumiere, yLumiere, rayonVision, 0, Math.PI * 2, true);
+        ctx.fill();
+
+        ctx.restore();
+    }
+}
+
+// BOUCLE DE JEU
+function boucle(timestamp) {
+    // Calcul du delta (fluidité)
+    let delta = (timestamp - lastTime) / 16.666;
+    lastTime = timestamp;
+
+    update(delta);
+    updateEnemies(delta);
+    afficher();
+
+    requestAnimationFrame(boucle);
+}
+
+// Lancement
+init();
+requestAnimationFrame(boucle);
