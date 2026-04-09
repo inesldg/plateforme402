@@ -2,7 +2,7 @@
 	Pour mieux comprendre ce script, voir : https://css-tricks.com/serviceworker-for-offline/
 *******************/
 
-var version = 'v1:9:2';
+var version = 'v1:10:0';
 
 // Correspondance cache : les navigateurs envoient souvent des requêtes « Range » pour
 // audio/vidéo ; elles ne matchent pas toujours la réponse complète stockée par addAll.
@@ -28,7 +28,8 @@ self.addEventListener("install", function(event) {
 	event.waitUntil(
 	caches.open(version + 'fundamentals')
       .then(function(cache) {
-        return cache.addAll([
+        var assets = [
+          './',
           './index.html',
           './manifest.json',
           './sw.js',
@@ -148,7 +149,31 @@ self.addEventListener("install", function(event) {
           './audio/jeu4/Time-tock.wav',
           './audio/jeu4/time-up.wav',
           './audio/jeu4/winning.mp3'
-        ]);
+        ];
+
+        var coreAssets = [
+          './',
+          './index.html',
+          './manifest.json',
+          './sw.js',
+          './styles/style.css',
+          './styles/main-app.css',
+          './js/navigation-map.js',
+          './js/game-flow.js'
+        ];
+
+        // On precache d'abord le "noyau" de l'app. Ensuite, on tente le reste en best-effort
+        // pour éviter qu'un seul fichier manquant/corrompu empêche toute installation offline.
+        return cache.addAll(coreAssets).then(function () {
+          var extraAssets = assets.filter(function (url) {
+            return coreAssets.indexOf(url) === -1;
+          });
+          return Promise.allSettled(
+            extraAssets.map(function (url) {
+              return cache.add(url);
+            })
+          );
+        });
       })
       .then(function() {
         return self.skipWaiting();
@@ -176,13 +201,28 @@ self.addEventListener("fetch", function(event) {
 			}
 
 			function unableToResolve () {
+        // Si c'est une navigation HTML et qu'on est offline, on renvoie l'index cache.
+        var accepteHtml = event.request.mode === "navigate" ||
+          (event.request.headers.get("accept") || "").indexOf("text/html") !== -1;
+        if (accepteHtml) {
+          return caches.match('./index.html', { ignoreSearch: true }).then(function (offlinePage) {
+            if (offlinePage) return offlinePage;
+            return new Response("<h1>Offline page unavailable</h1>", {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({
+                'Content-Type': 'text/html'
+              })
+            });
+          });
+        }
 
-			  return new Response("<h1>Cette ressource n'est pas disponible hors ligne</h1>", {
-				status: 503,
-				statusText: 'Service Unavailable',
-				headers: new Headers({
-				  'Content-Type': 'text/html'
-				})
+			  return new Response("Offline resource unavailable", {
+				  status: 503,
+				  statusText: 'Service Unavailable',
+				  headers: new Headers({
+				    'Content-Type': 'text/plain'
+				  })
 			  });
 			}
 		  })
