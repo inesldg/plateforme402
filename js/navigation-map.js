@@ -1,11 +1,11 @@
 (function () {
   // Coordonnées géo à atteindre pour chaques jeux
   var jeux = {
-    1: { nom: "Place de la réunion, devant l'église", latitude: 47.72925138687331, longitude: 7.301300281434088, rayonArrivee: 10 },
-    2: { nom: "Place de la réunion", latitude: 47.72933806459316, longitude: 7.300817761303703, rayonArrivee: 10 },
-    3: { nom: "Café Guillaume Tell, lampadaire pomme", latitude: 47.72954550150456, longitude: 7.300475053984185, rayonArrivee: 10 },
-    4: { nom: "Taverne des Chevaliers Teutoniques", latitude: 47.729878462701, longitude: 7.30024177119069, rayonArrivee: 10 },
-    5: { nom: "Boulangerie Gebele", latitude: 47.730224178790074, longitude: 7.300342291396566, rayonArrivee: 10 },
+    1: { nom: "Place de la réunion, devant l'église", latitude: 47.74692365564367, longitude: 7.338653147115707, rayonArrivee: 10 },
+    2: { nom: "Place de la réunion", latitude: 47.746833300731275, longitude: 7.338617460239516, rayonArrivee: 10 },
+    3: { nom: "Café Guillaume Tell, lampadaire pomme", latitude: 47.74647555231466, longitude: 7.339206649304488, rayonArrivee: 10 },
+    4: { nom: "Taverne des Chevaliers Teutoniques", latitude: 47.74641067400847, longitude: 7.33756699848394, rayonArrivee: 10 },
+    5: { nom: "Boulangerie Gebele", latitude: 47.74664132914144, longitude: 7.335819162843482, rayonArrivee: 10 },
   };
 
   // Éléments HTML
