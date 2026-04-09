@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Plateformer - Game 2</title>
+  <link rel="stylesheet" href="../../styles/jeu2/style.css">
+</head>
+<body>
+  <canvas id="collisionZone" class="invisible"></canvas>
+  <canvas id="playerZone" class="invisible"></canvas>
+  <canvas id="playZone" class="invisible"></canvas>
+
+  <div id="menu">
+    <h2>Jump from platform to platform and reach the end</h2>
+    <div class="instructions">
+      <div>Move by tilting your phone and jump by tapping your screen!</div>
+      <div>Some objects can be pushed to help you get across.</div>
+      <div>And finally, don't fall into the water!</div>
+      <div>Good luck!</div>
+    </div>
+    <div class="start button">Start</div>
+  </div>
+
+  <div id="loseGame" class="invisible">
+    <h2>You lost</h2>
+    <div class="start button">Try again</div>
+  </div>
+
+  <div id="winGame" class="invisible">
+    <h2>You won!</h2>
+    <button type="button" id="btnContinuerJeu2" class="button">Continue the adventure</button>
+  </div>
+
+  <script src="../../js/jeu2/main.js"></script>
+</body>
+</html>

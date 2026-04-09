@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Tarte de Tell</title>
+  <link rel="stylesheet" href="../../styles/jeu5/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+
+  <!-- ==================== START SCREEN ==================== -->
+  <div id="screenStart">
+    <img class="imgCuisinier" src="../../images/jeu5/cuisinier.png" alt="logo cuisinier">
+
+    <div class="TexteIntro">
+      <div>Control the baking: touch the left side of the oven to turn the pie left, and the right side to turn it
+        right!
+      </div>
+    </div>
+
+    <div class="texteintro2">
+      <div>The oven is unstable!!!</div>
+      <div>SHOUT = strong heat</div>
+      <div>SILENCE = cools down</div>
+    </div>
+
+    <div id="micPermBlock">
+      <div class="mic-txt">The game uses your microphone.<br>Allow access to play!</div>
+
+      <button type="button" class="pixelBtn" id="btnMicPerm" onclick="demanderMicro()">
+        🎤 ALLOW MICROPHONE
+      </button>
+
+      <div class="mic-status" id="micStatus">Waiting for permission...</div>
+
+      <div id="micLevelWrap">
+        <div class="lev-lbl">Microphone level:</div>
+        <div id="micLevelBg">
+          <div id="micLevelFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="pixelBtn" id="btnDemarrer" onclick="startGame()" disabled>
+      ▶ START
+    </button>
+  </div>
+
+  <!-- ==================== GAME SCREEN ==================== -->
+  <div id="screenGame">
+
+    <img class="imgCuisinier" src="../../images/jeu5/cuisinier.png" alt="logo cuisinier">
+
+    <div id="hudTop">
+      <div class="hudCard">
+        <span class="lbl">FOUR</span>
+        <span class="val" id="valTemp">20°C</span>
+      </div>
+      <div class="hudCard">
+        <span class="lbl">TIME</span>
+        <span class="val" id="valTimer">60</span>
+      </div>
+    </div>
+
+    <div class="texteintro3">
+      <div id="msgBox">Get ready...</div>
+    </div>
+
+    <canvas id="cv"></canvas>
+
+    <div id="micInGame">
+      <span class="mic-lbl">🎤</span>
+      <div id="micInGameBg">
+        <div id="micInGameFill"></div>
+      </div>
+      <span id="micInGameVal">0%</span>
+    </div>
+
+  </div>
+
+  <!-- ==================== END SCREEN ==================== -->
+  <div id="screenEnd">
+    <div id="endTitle">RESULT</div>
+    <span id="endEmoji" class="end-emoji" aria-hidden="true"></span>
+    <div id="endSub"></div>
+    <button type="button" id="btnContinuerHistoire" class="pixelBtn" hidden>Continue the adventure</button>
+    <button type="button" id="btnRejouer" class="pixelBtn" onclick="location.reload()">↩ PLAY AGAIN</button>
+  </div>
+
+  <div id="sosOverlay"><span id="sosTxt">SOS</span></div>
+
+  <script src="../../js/jeu5/script.js"></script>
+  <script src="../../js/jeu5/dessinerFour.js"></script>
+  <script src="../../js/jeu5/findujeu.js"></script>
+  <script src="../../js/jeu5/dessinerTarte.js"></script>
+  <script src="../../js/jeu5/sons.js"></script>
+  <script src="../../js/jeu5/tactile.js"></script>
+</body>
+
+</html>

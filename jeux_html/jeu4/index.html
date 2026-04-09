@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Site SAE 402</title>
+	<link rel="icon" type="image/webp" href="../../images/jeu4/apple_regular_60x60px.webp">
+	<link rel="stylesheet" href="../../styles/jeu4/style.css">
+</head>
+<body>
+	<main>
+		<div class="pile-canvas">
+			<canvas id="canva-fond"></canvas>
+			<canvas id="canva-minuteur"></canvas>
+			<canvas id="canva-pommes"></canvas>
+		</div>
+		<div id="surcouche-regles" class="surcouche-jeu est-visible">
+			<div class="carte-surcouche-jeu">
+				<h1>GAME RULES</h1>
+				<ul class="liste-regles">
+					<li>Do not slice rotten apples!</li>
+					<li>Score at least 250 points.</li>
+					<li>Red apple = 2 points.</li>
+					<li>Golden apples = 10 points.</li>
+					<li>There is a hidden secret for the smartest players.</li>
+				</ul>
+				<p class="message-surcouche">Good luck!</p>
+				<button id="bouton-demarrer" type="button">GO !</button>
+			</div>
+		</div>
+		<div id="surcouche-fin-partie" class="surcouche-jeu">
+			<div class="carte-surcouche-jeu">
+				<h1>GAME OVER</h1>
+				<p id="message-fin-partie" class="message-surcouche">You scored 0 points.</p>
+				<button id="bouton-recommencer" type="button">Play again</button>
+			</div>
+		</div>
+		<div id="surcouche-victoire" class="surcouche-jeu">
+			<div class="carte-surcouche-jeu carte-surcouche-jeu-victoire">
+				<h1>VICTORY</h1>
+				<p id="message-victoire" class="message-surcouche">Well done, you scored 0 points.</p>
+				<button id="bouton-continuer" type="button">Continue</button>
+			</div>
+		</div>
+	</main>
+
+	<script src="../../js/jeu4/script.js?v=20260405"></script>
+	<script src="../../js/jeu4/timer.js?v=20260405"></script>
+	<script src="../../js/jeu4/pommes.js?v=20260405"></script>
+</body>
+</html>

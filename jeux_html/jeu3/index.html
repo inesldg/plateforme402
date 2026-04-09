@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAE 402 la récolte</title>
+    <link rel="stylesheet" href="../../styles/jeu3/style.css">
+</head>
+
+<body>
+    <canvas id="monCanva"></canvas>
+
+    <!-- Ecran de consignes au démarrage -->
+    <div id="ecranConsignes" class="ecran-consignes">
+        <h2 class="ecran-consignes_titre">Instructions</h2>
+        <p class="ecran-consignes_texte ecran-consignes_intro">Collect as many apples as possible!</p>
+
+        <div class="ecran-consignes_legende">
+            <div class="legende-item">
+                <img class="legende-item_img" src="../../images/jeu3/pommeRouge.png" alt="Regular apple">
+                <div class="legende-item_texte">Red apple: +1</div>
+            </div>
+            <div class="legende-item">
+                <img class="legende-item_img" src="../../images/jeu3/pommeDoree.png" alt="Golden apple">
+                <div class="legende-item_texte">Golden apple: +10</div>
+            </div>
+            <div class="legende-item">
+                <img class="legende-item_img" src="../../images/jeu3/pommePourrie.png" alt="Rotten apple">
+                <div class="legende-item_texte">Rotten apple: -5 (and -1 life)</div>
+            </div>
+        </div>
+
+        <p class="ecran-consignes_texte ecran-consignes_temps">Time limit: <b>30 seconds</b></p>
+        <p class="ecran-consignes_texte ecran-consignes_micro">
+            Warning: if a pigeon appears, <br> shout or blow to scare it away!
+        </p>
+        <button id="btnAutoriserMicro" type="button" class="btn-lancer btn-micro">Allow microphone</button>
+        <p id="etatMicroConsignes" class="ecran-consignes_texte ecran-consignes_micro-etat">Microphone not set up</p>
+
+        <button id="btnLancerJeu" type="button" class="btn-lancer">Start game</button>
+        <button id="btnRevoirCinematique" type="button" class="btn-lancer btn-revoir-cinematique cache">Watch the cutscene again</button>
+    </div>
+
+    <!-- Cinématique affichée une seule fois après les consignes -->
+    <div id="ecranCinematique" class="ecran-cinematique cache">
+        <div class="ecran-cinematique_scene">
+            <img id="imagePommierCinematique" src="../../images/jeu3/pommier.png" alt="Pommier">
+            <img class="pomme-cine pomme-cine-1" src="../../images/jeu3/pommeRouge.png" alt="">
+            <img class="pomme-cine pomme-cine-2" src="../../images/jeu3/pommeRouge.png" alt="">
+            <img class="pomme-cine pomme-cine-3" src="../../images/jeu3/pommeRouge.png" alt="">
+        </div>
+
+        <p id="texteCinematique" class="ecran-cinematique_texte">Shake your phone!</p>
+        <button id="btnSecouerArbre" type="button" class="ecran-cinematique_btn-secret" title="Bouton"></button>
+    </div>
+
+    <!-- Écran qui s'affiche en cas de fin par manque de vies-->
+    <div id="ecranGameOver" class="ecran-fin ecran-fin-popup cache">
+        <h2 id="gameOverTitre">GAME OVER!</h2>
+        <p id="gameOverScore">Score: 0</p>
+        <button id="btnRejouerGameOver" type="button">Play again</button>
+    </div>
+
+    <!-- Écran qui s'affiche en cas de victoire (temps écoulé)-->
+    <div id="ecranVictoire" class="ecran-fin cache">
+        <div class="ecran-victoire_contenu">
+            <h2 id="victoireTitre">Game over</h2>
+            <p id="victoireScore">Score: 0</p>
+            <div class="ecran-fin_actions">
+                <button id="btnRejouerVictoire" type="button">Play again</button>
+                <button id="btnContinuerHistoire" type="button">Continue the story</button>
+            </div>
+            <img id="imagePanierFin" src="../../images/jeu3/panier_fin.png" alt="Panier rempli de pommes">
+        </div>
+    </div>
+
+    <!-- Message qui s'affiche quand le téléphone est en mode paysage-->
+    <div id="ecranOrientation" class="ecran-orientation cache">
+        <p>Please rotate your phone to portrait mode :)</p>
+    </div>
+
+    <script src="../../js/jeu3/elements.js"></script> <!-- sprites, score, vies, timer...-->
+    <script src="../../js/jeu3/audio.js"></script> <!-- audio du jeu et activation pour la norme...-->
+    <script src="../../js/jeu3/input.js"></script> <!-- contrôles du jeu (gyroscope tel + souris ordi) et orientation du tel -->
+    <script src="../../js/jeu3/UI.js"></script> <!-- affichage du score, timer et vies -->
+    <script src="../../js/jeu3/jeu.js"></script> <!-- script principal du jeu (collisions, dessin des éléments, boutons...) -->
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        if (params.get("autostart") !== "1") return;
+
+        // On marque la cinématique comme déjà vue pour démarrer directement la partie.
+        try {
+          sessionStorage.setItem("cinematiqueSecouerArbreVue", "1");
+        } catch (e) {}
+
+        var btn = document.getElementById("btnLancerJeu");
+        if (btn) btn.click();
+      })();
+    </script>
+</body>
+
+</html>
